@@ -38,4 +38,4 @@ class ShanonEntropy {
 
 }
 
-export default ShanonEntropy
+export default ShanonEntropy;

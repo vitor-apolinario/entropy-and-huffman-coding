@@ -70,7 +70,7 @@ class Huffman {
     if(a.bitSet)
       this.lastByte = a.bitSet;
 
-    console.log(`size in bytes\n normal encoding: ${this.messageBuffer.length}\nhuffman: ${a.byteArray.length}\n`);    
+    console.log(`size in bytes\nnormal encoding: ${this.messageBuffer.length}\nhuffman: ${a.byteArray.length}\n`);    
 
     const filePath = join(__dirname, '..', '..', 'static', 'output', 'huffman_encoded', fileName);
     writeFileSync(filePath, Buffer.from(a.byteArray));

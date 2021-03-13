@@ -8,8 +8,10 @@ class Huffman {
   tree: TreeNode[] = [];
   treeHead: TreeNode;
   normalEncoding: string;
-  huffmanEncoding: string;
   mappingTable: {} = {};
+  lastByte: string = '';
+
+  byteArray: string[] = [];
 
   constructor(private messageBuffer: Buffer) {
     messageBuffer.forEach(charCode => {
@@ -31,7 +33,6 @@ class Huffman {
   }
 
   encode(fileName: string) {
-    this.byteEncode(fileName);
 
     while(this.tree.length > 1) {
       const nodeA: TreeNode = this.tree.pop();
@@ -50,26 +51,41 @@ class Huffman {
     }
 
     this.treeHead = this.tree.pop();
-    this.mapTree(this.treeHead, '');
+    this.createMappingTable(this.treeHead, '');
 
-    this.huffmanEncoding = this.messageBuffer.reduce((bitArray: string, charCode: number) => {
+    const a = this.messageBuffer.reduce((accumulator, charCode: number) => {
       const char: string = String.fromCharCode(charCode)
+      const bits: string = this.mappingTable[char];
 
-      const byte: string = this.mappingTable[char];
-      return bitArray + byte;
-    }, '')
-    
+      accumulator.bitSet += bits;
+
+      while(accumulator.bitSet.length >= 8) {
+        accumulator.byteArray.push(parseInt(accumulator.bitSet.substr(0, 8), 2));
+        accumulator.bitSet = accumulator.bitSet.substr(8)
+      }
+      
+      return accumulator;
+    }, { bitSet: '', byteArray: [] })
+
+    if(a.bitSet)
+      this.lastByte = a.bitSet;
+
+    console.log(`size in bytes\n normal encoding: ${this.messageBuffer.length}\nhuffman: ${a.byteArray.length}\n`);    
+
     const filePath = join(__dirname, '..', '..', 'static', 'output', 'huffman_encoded', fileName);
-    writeFileSync(filePath, this.huffmanEncoding);
+    writeFileSync(filePath, Buffer.from(a.byteArray));
   }
 
-  // mesmo sendo leaf tem que mapear o binário para algum estado
   decode(fileName: string) {
     const encodedMessageBuffer: Buffer = readFileSync(join(__dirname, '..', '..', 'static', 'output', 'huffman_encoded', fileName));
-    let currentNode: TreeNode = this.treeHead;
     
-    const decodedMessage: string = encodedMessageBuffer.reduce((decodedBuffer, bitRepresentation) => {
-      currentNode = String.fromCharCode(bitRepresentation) === "1" ? currentNode.right : currentNode.left;
+    let bitSet: string = encodedMessageBuffer.reduce((bitS, charCode) => bitS + charCode.toString(2).padStart(8, '0') , '')
+    bitSet += this.lastByte;
+
+    let currentNode: TreeNode = this.treeHead;
+
+    const decodedMessage: string = [...bitSet].reduce((decodedBuffer, bitRepresentation) => {
+      currentNode = bitRepresentation === "1" ? currentNode.right : currentNode.left;
 
       if(currentNode.isLeaf) {
         const { symbol } = currentNode;
@@ -84,28 +100,18 @@ class Huffman {
     writeFileSync(filePath, decodedMessage)
   }
 
-  private byteEncode(fileName: string) {
-    this.normalEncoding = this.messageBuffer.reduce((bitArray: string, charCode: number) => {
-      const byte: string = charCode.toString(2).padStart(8, '0');
-      return bitArray + byte;
-    }, '')
-
-    const filePath = join(__dirname, '..', '..', 'static', 'output', 'byte_encoded', fileName);
-    writeFileSync(filePath, this.normalEncoding);
-  }
-
   private sortNodes(){
     this.tree.sort((na: TreeNode, nb: TreeNode) => nb.frequency - na.frequency)
   }
 
-  private mapTree(currentNode: TreeNode, mappedCode: string) {
+  private createMappingTable(currentNode: TreeNode, mappedCode: string) {
     if(currentNode.isLeaf) {
       this.mappingTable[currentNode.symbol] = mappedCode;
       return;
     }
 
-    this.mapTree(currentNode.left, `${mappedCode}${0}`);
-    this.mapTree(currentNode.right, `${mappedCode}${1}`);
+    this.createMappingTable(currentNode.left, `${mappedCode}${0}`);
+    this.createMappingTable(currentNode.right, `${mappedCode}${1}`);
   }
 }
 

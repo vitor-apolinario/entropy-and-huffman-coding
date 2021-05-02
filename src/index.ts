@@ -19,10 +19,7 @@ documents.forEach(fileName => {
 
   const encodedMessageBuffer: Buffer = readFileSync(join(__dirname, "..", "static", "output", "huffman_encoded",  fileName));
 
-  const originalFileSE: ShanonEntropyUtil = new ShanonEntropyUtil(messageBuffer);
-  const encodedFileSE:  ShanonEntropyUtil = new ShanonEntropyUtil(encodedMessageBuffer);
-
-  console.log(`original: ${originalFileSE.getEntropy()}`);
-  console.log(`encoded:  ${encodedFileSE.getEntropy()}\n`);
+  console.log(`original: ${ShanonEntropyUtil.getEntropy(messageBuffer)}`);
+  console.log(`encoded:  ${ShanonEntropyUtil.getEntropy(encodedMessageBuffer)}\n`);
 });
 

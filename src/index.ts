@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
-import ShanonEntropy from './models/ShanonEntropy';
+import ShanonEntropyUtil from './utils/shanonEntropyUtil';
 import Huffman from './models/Huffman';
 
 
@@ -19,8 +19,8 @@ documents.forEach(fileName => {
 
   const encodedMessageBuffer: Buffer = readFileSync(join(__dirname, "..", "static", "output", "huffman_encoded",  fileName));
 
-  const originalFileSE: ShanonEntropy = new ShanonEntropy(messageBuffer);
-  const encodedFileSE:  ShanonEntropy = new ShanonEntropy(encodedMessageBuffer);
+  const originalFileSE: ShanonEntropyUtil = new ShanonEntropyUtil(messageBuffer);
+  const encodedFileSE:  ShanonEntropyUtil = new ShanonEntropyUtil(encodedMessageBuffer);
 
   console.log(`original: ${originalFileSE.getEntropy()}`);
   console.log(`encoded:  ${encodedFileSE.getEntropy()}\n`);

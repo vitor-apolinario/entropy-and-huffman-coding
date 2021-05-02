@@ -1,4 +1,4 @@
-class ShanonEntropy {
+class ShanonEntropyUtils {
   symbolCount: {} = {};
   messageSize: number;
   alphabetSize: number;
@@ -38,4 +38,4 @@ class ShanonEntropy {
 
 }
 
-export default ShanonEntropy;
+export default ShanonEntropyUtils;

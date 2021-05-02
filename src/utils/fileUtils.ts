@@ -21,3 +21,5 @@ class FileUtils {
     writeFileSync(join(existantPath, fileName), fileBuffer)
   }
 }
+
+export default FileUtils;

@@ -1,6 +1,3 @@
-import { join } from 'path';
-import { readFileSync, writeFileSync } from 'fs';
-
 import TreeNode from '../interfaces/TreeNode';
 
 class Huffman {
@@ -32,8 +29,7 @@ class Huffman {
     this.sortNodes()
   }
 
-  encode(fileName: string) {
-
+  encode(): Buffer {
     while(this.tree.length > 1) {
       const nodeA: TreeNode = this.tree.pop();
       const nodeB: TreeNode = this.tree.pop();
@@ -72,13 +68,10 @@ class Huffman {
 
     console.log(`size in bytes\nnormal encoding: ${this.messageBuffer.length}\nhuffman: ${a.byteArray.length}\n`);    
 
-    const filePath = join(__dirname, '..', '..', 'static', 'output', 'huffman_encoded', fileName);
-    writeFileSync(filePath, Buffer.from(a.byteArray));
+    return Buffer.from(a.byteArray);
   }
 
-  decode(fileName: string) {
-    const encodedMessageBuffer: Buffer = readFileSync(join(__dirname, '..', '..', 'static', 'output', 'huffman_encoded', fileName));
-    
+  decode(encodedMessageBuffer: Buffer): Buffer {
     let bitSet: string = encodedMessageBuffer.reduce((bitS, charCode) => bitS + charCode.toString(2).padStart(8, '0') , '')
     bitSet += this.lastByte;
 
@@ -95,9 +88,8 @@ class Huffman {
       }
       return decodedBuffer;
     }, '')
-   
-    const filePath = join(__dirname, '..', '..', 'static', 'output', 'huffman_decoded', fileName);
-    writeFileSync(filePath, decodedMessage)
+
+    return Buffer.from(decodedMessage);
   }
 
   private sortNodes(){

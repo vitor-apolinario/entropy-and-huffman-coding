@@ -66,8 +66,6 @@ class Huffman {
     if(a.bitSet)
       this.lastByte = a.bitSet;
 
-    console.log(`size in bytes\nnormal encoding: ${this.messageBuffer.length}\nhuffman: ${a.byteArray.length}\n`);    
-
     return Buffer.from(a.byteArray);
   }
 

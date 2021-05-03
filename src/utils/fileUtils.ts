@@ -18,7 +18,7 @@ class FileUtils {
   static writeFile(fileBuffer: Buffer, filePath: string[], fileName: string): void{    
     const existantPath: string = this.createDir(filePath);
 
-    writeFileSync(join(existantPath, fileName), fileBuffer)
+    writeFileSync(join(existantPath, fileName), fileBuffer);
   }
 }
 

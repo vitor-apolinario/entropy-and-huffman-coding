@@ -1,4 +1,4 @@
-import TreeNode from '../interfaces/TreeNode';
+import TreeNode from '../interfaces/treeNode';
 
 class Huffman {
   symbolCount: {} = {};
@@ -27,9 +27,7 @@ class Huffman {
     }))
 
     this.sortNodes()
-  }
 
-  encode(): Buffer {
     while(this.tree.length > 1) {
       const nodeA: TreeNode = this.tree.pop();
       const nodeB: TreeNode = this.tree.pop();
@@ -48,7 +46,9 @@ class Huffman {
 
     this.treeHead = this.tree.pop();
     this.createMappingTable(this.treeHead, '');
+  }
 
+  encode(): Buffer {
     const a = this.messageBuffer.reduce((accumulator, charCode: number) => {
       const char: string = String.fromCharCode(charCode)
       const bits: string = this.mappingTable[char];

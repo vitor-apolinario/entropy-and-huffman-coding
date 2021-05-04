@@ -2,7 +2,7 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 
 import ShanonEntropyUtil from './utils/shanonEntropyUtil';
-import Huffman from './models/Huffman';
+import Huffman from './models/huffman';
 import FileUtils from './utils/fileUtils';
 
 

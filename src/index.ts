@@ -22,8 +22,15 @@ documents.forEach(fileName => {
   const decodedMessageBuffer: Buffer = he.decode(encodedMessageBuffer);
   FileUtils.writeFile(decodedMessageBuffer, ['static', 'output', 'huffman_decoded'], fileName);
 
-  console.log(`size in bytes\nnormal encoding: ${messageBuffer.length}\nhuffman: ${encodedMessageBuffer.length}\n`);    
-  console.log(`original: ${ShanonEntropyUtil.getEntropy(messageBuffer)}`);
-  console.log(`encoded:  ${ShanonEntropyUtil.getEntropy(encodedMessageBuffer)}\n`);
+  const decodedSize: number = messageBuffer.length;
+  const encodedSize: number = encodedMessageBuffer.length
+
+  const decodedEntropy: number = ShanonEntropyUtil.getEntropy(messageBuffer);
+  const encodedEntropy: number = ShanonEntropyUtil.getEntropy(encodedMessageBuffer);
+
+  console.log(`size in bytes\nnormal encoding: ${decodedSize}\nhuffman: ${encodedSize}\ndiff: ${(1 - (encodedSize/decodedSize))*100}%\n`);
+  console.log(`original: ${decodedEntropy}`);
+  console.log(`encoded:  ${encodedEntropy}`);
+  console.log(`diff:  ${ShanonEntropyUtil.getEntropy(encodedMessageBuffer) - ShanonEntropyUtil.getEntropy(decodedMessageBuffer)}\n`);
 });
 
